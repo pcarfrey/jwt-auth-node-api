@@ -6,6 +6,7 @@ var app         = express();
 var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
+var path        = require('path');
 
 var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('./config'); // get our config file
@@ -25,12 +26,15 @@ app.use(bodyParser.json());
 // use morgan to log requests to the console
 app.use(morgan('dev'));
 
+// make static content public
+app.use(express.static(path.join(__dirname, 'public')))
+
 // =======================
 // routes ================
 // =======================
 // basic route
 app.get('/', function(req, res) {
-    res.send('Hello, the API is at http://localhost:' + port + '/api');
+    res.sendFile(path.join(__dirname, '/index.html'));
 });
 // user setup route
 app.get('/setup', function(req, res) {

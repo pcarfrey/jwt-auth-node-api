@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>API Test Page</title>
+</head>
+<body>
+<div class="container">
+	<h2>API Test Page</h2>
+
+	<div>
+		<label for="token">Token:</label>
+		<input id="token" type="text" readonly="true">
+	</div>
+	<hr>
+	<div>
+		<label for="name">Username:</label>
+		<input id="name" type="text">
+		<label for="password">Password:</label>
+		<input id="password" type="password">
+	</div>
+	<button id="login">Login</button>
+	<button id="logout">Logout</button>
+	<hr>
+	<button id="users">Get Users</button>
+	<p id="user-info"></p>
+	</div>
+
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script>
+		var token = '';
+
+		$('#logout').click(function(){
+	    	token = '';
+	    	$('#token').val(token)
+	    	$('#user-info').text('');
+	    	$('#name').val('');
+	    	$('#password').val('');
+		});
+
+		$('#login').click(function(){
+	    	$.post('api/authenticate',{
+		        name: $('#name').val(),
+		        password: $('#password').val()
+		    },
+		    function(data){
+		        token = data.token;
+		        $('#token').val(token)
+		    });
+		});
+
+		$('#users').click(function(){
+	    	$.get('api/users?token=' + token,
+		    function(data){
+	    		// TODO: loop over all users (for each data)
+	    		$('#user-info').text('Name: ' + data[0].name + ', Password: ' + data[0].password + ', Admin: ' + data[0].admin);
+		    })
+		    .fail(function(error) {
+				$('#user-info').text(error.responseText);
+			});
+		});
+	</script>
+</body>
+</html>
